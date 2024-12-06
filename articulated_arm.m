@@ -30,6 +30,18 @@ z4 = z4 * h_joint;
 z6 = z6 * h_joint;
 [x7, y7, z7] = cylinder(r1);        % Link O_2
 
+x_e = [20,30,40,50,60,60,50,40,40,40,50,60,60,50,40,30,20,20,20,20,20,20];
+x_e = x_e - 20;
+z_e = [-30,-30,-30,-30,-20,-10,-10,-10,0,10,10,10,20,30,30,30,30,20,10,0,-10,-20];
+y_e = 10*ones(1,size(x_e,2));
+y_e(2,:)= -10*ones(1,size(x_e,2));
+
+x_e = repmat(x_e, 2, 1);
+z_e = repmat(z_e, 2, 1); 
+
+H = [x_e(1,:); y_e(1,:); z_e(1,:); ones(1,size(x_e,2))];
+R = [x_e(2,:); y_e(2,:); z_e(2,:); ones(1,size(x_e,2))];
+
 % Xoay 90 do => link vuong goc joint
 rotY = [cos(pi/2)  0 sin(pi/2) 0; 
         0          1 0         0; 
@@ -94,6 +106,13 @@ for j = 1:length(x3)
     end
 end
 
+%End effector
+H_new = T0_3*R;
+R_new = T0_3*H;
+x_e(1,:) = H_new(1,:);x_e(2,:) = R_new(1,:);
+y_e(1,:) = H_new(2,:);y_e(2,:) = R_new(2,:);
+z_e(1,:) = H_new(3,:);z_e(2,:) = R_new(3,:);
+
 figure;
 hold on;
 grid on;
@@ -103,10 +122,10 @@ ylabel('Y');
 zlabel('Z');
 title('Robotics');
 
-% Ánh sáng và shading
-shading interp;        % Làm mịn bề mặt
+% �?nh sáng và shading
+shading interp;        % Làm mịn b�? mặt
 % lighting gouraud;      % Dùng phương pháp Gouraud để hiển thị ánh sáng
-% camlight;              % Đặt nguồn sáng theo góc nhìn của camera
+% camlight;              % �?ặt nguồn sáng theo góc nhìn của camera
 
 % Base
 surf(x1, y1, z1, 'EdgeColor', 'none', 'FaceColor', 'r'); 
@@ -143,7 +162,13 @@ surf(x7, y7, z7, 'EdgeColor', 'none', 'FaceColor', 'y');
 fill3(x7(1,:), y7(1,:), z7(1,:), 'y');
 fill3(x7(2,:), y7(2,:), z7(2,:), 'y');
 
-% Điều chỉnh không gian tọa độ
+%End effector
+surf(x_e, y_e, z_e, 'FaceColor', 'r');
+fill3(x_e(1, :), y_e(1,:), z_e(1,:),'g');
+fill3(x_e(2, :), y_e(2,:), z_e(2,:),'g');
+
+
+% �?i�?u chỉnh không gian t�?a độ
 % xlim([-80 80]);
 % ylim([-80 80]);
 % zlim([0 120]);
